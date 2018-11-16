@@ -1,0 +1,36 @@
+pipeline {
+	agent any
+	
+	stages {
+        stage ('Checkout Stage') {
+
+            steps {
+                withMaven(maven : 'maven360') {
+                    sh 'mvn Checkout'
+                }
+            }
+        }
+		stage ('Compile Stage') {
+
+            steps {
+                withMaven(maven : 'maven360') {
+                    sh 'mvn clean compile'
+                }
+            }
+        }
+        stage ('Testing Stage') {
+
+            steps {
+                withMaven(maven : 'maven360') {
+                    sh 'mvn test'
+                }
+            }
+        }
+        stage ('Deployment Stage') {
+
+            steps {
+                withMaven(maven : 'maven360') {
+                    sh 'mvn deploy'
+                }
+            }
+        }
