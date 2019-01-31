@@ -1,36 +1,22 @@
-pipeline {
-	agent any
-	
-	stages {
-        stage ('Checkout Stage') {
+node("Agent"){
+    def mvnHome = tool name: 'mvn360', type: 'maven'
+    stage("Pulling Repo"){
+        echo"I'm pulling repo from Github"
+        git credentialsId: 'githubaccount', url: 'https://github.com/tkkhadka/calculate-contestant-s-scores.git'
 
-            steps {
-                withMaven(maven : 'maven360') {
-                    sh 'mvn Checkout'
-                }
-            }
-        }
-		stage ('Compile Stage') {
-
-            steps {
-                withMaven(maven : 'maven360') {
-                    sh 'mvn clean compile'
-                }
-            }
-        }
-        stage ('Testing Stage') {
-
-            steps {
-                withMaven(maven : 'maven360') {
-                    sh 'mvn test'
-                }
-            }
-        }
-        stage ('Deployment Stage') {
-
-            steps {
-                withMaven(maven : 'maven360') {
-                    sh 'mvn deploy'
-                }
-            }
-        }
+    }
+    stage("Clean Test"){
+        echo "Now I'm Performing the Clean Test"
+        sh "$mvnHome/bin/mvn clean test"
+        
+    }
+    stage("Build"){
+        echo "Now im building the Repo"
+        sh "$mvnHome/bin/mvn clean package"
+      
+    }
+    stage("Post Build Action"){
+        echo "Emailing the DevOps team"
+        
+    }
+}
